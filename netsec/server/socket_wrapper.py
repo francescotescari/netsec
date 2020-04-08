@@ -24,6 +24,53 @@ class BaseSocketWrapper:
         return self.__socket
 
 
+class _CloseClient(BaseSocketWrapper):
+    __closed = False
+
+    def __init__(self, sock, count_ptr):
+        super().__init__(sock)
+        self.__cp = count_ptr
+
+    def close(self, *args, **kwargs):
+        self.__close()
+        return self.__sock_obj().close(*args, **kwargs)
+
+    def detach(self, *args, **kwargs):
+        self.__close()
+        return self.__sock_obj().detach(*args, **kwargs)
+
+    def __close(self):
+        if self.__closed:
+            return
+        self.__cp.value -= 1
+        self.__closed = True
+
+
+class _Pointer:
+
+    def __init__(self, value=None):
+        self.value = value
+
+
+class ClientLimit(BaseSocketWrapper):
+    _count = _Pointer(0)
+
+    def __init__(self, sock, limit):
+        super().__init__(sock)
+        self.__limit = limit
+
+    def accept(self):
+        while True:
+            conn = self.__sock_obj().accept()
+            self._count.value += 1
+            if self._count.value <= self.__limit:
+                return _CloseClient(conn[0], self._count), conn[1]
+            if self.is_logging:
+                print("Maximum number of open connections (%d) reached, refusing new connections" % self.__limit)
+            conn[0].close()
+            self._count.value -= 1
+
+
 class SocketBlocker(BaseSocketWrapper):
 
     def accept(self):
@@ -61,9 +108,9 @@ class LimiterIpBlocker(SocketBlocker):
         ip = conn[1][0]
         t = time()
         count = self._count_clear(ip, t)
-        if self.is_logging:
-            print("%s connected %d/%d times in %d seconds" % (ip, len(count), self.__limit_num, self.__limit_tim))
         if len(count) >= self.__limit_num:
+            if self.is_logging:
+                print("%s connected %d/%d times in %d seconds" % (ip, len(count), self.__limit_num, self.__limit_tim))
             return True
         else:
             count.append(t)
