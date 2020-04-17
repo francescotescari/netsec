@@ -1,1 +1,1 @@
-python3.8 ../../netsec/main.py "$@"
+python3.8 http_server.py "$@"
