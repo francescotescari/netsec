@@ -1,0 +1,26 @@
+1) Syn flood attack
+    A) Start the HTTP server on the target machine (run server/start_server.sh)
+    B) Complete the send_syn function in the attack/syn_exercise.py script using scapy
+    C) Open wireshark on the target server (run server/start_wireshark.sh)
+    D) Send a syn packet using your syn_exercise.py script (or attack/single.py if you failed to do that) to the target machine
+    E) Observe the communication and the behaviour of the server on wireshark
+    F) Send a synflood attack using the attack/flood.py script
+    G) Observe the traffic on the server with wireshark and spot some differences with the single packet
+    H) Check if the server is reachable during the syn flood attack
+2) Backlog analysis
+    A) Start the backlog watch script on the server (run server/watch_backlog.sh)
+    B) Send a synflood attack to the target machine
+    C) Observer the backlog queue with the watch script, what is the size of the backlog?
+    D) Try to double the size of the backlog by restarting the HTTP server with the backlog argument (run server/start_server.sh BACKLOG_VALUE)
+    E) Send a synflood with the number of packets equals to the size of the backlog
+    F) Observe the timeouts in the backlog queue. How many connection got the full one minute timeout? How many got the two seconds timeout?
+    G) Repeat steps D, E, F one more time
+    H) Can you spot the rule behind the timeouts? Can you calculate the minimum number of request per minute required to keep the backlog queue full, as function of the backlog size?
+    I) What if I set the backlog size to one milion. How many syn packets should an attacker send per minute in order to keep the backlog queue full?
+3) Syncookies
+    A) Enable the syncookies coption using "sudo sysctl -w net.ipv4.tcp_syncookies=1"
+    B) Restart the HTTP server with the default backlog value
+    C) Send a synflood attack to the target machine
+    D) Observe the behaviour on wireshark on the target machine
+    G) Observe the traffic on the server with wireshark and spot some differences with the attack with syncookies disabled
+    H) Check if the server is reachable during the syn flood attack
