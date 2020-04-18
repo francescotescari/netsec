@@ -13,24 +13,32 @@ def random_private_port():
     return randint(49152, 65535)
 
 
-def send_syn(destination_ip, destination_port, spoofed_ip=True):
+private_static_port = 12345
+
+
+def send_syn(destination_ip, destination_port, spoofed_ip=True, src_port=None):
     """Send a syn packet to destination socket. Optionally spoof the origin ip"""
-    # 1) Create an IP packet with destination set to destination_ip
-    # 2) If spoofed_ip is True, set the source to a random ip address
-    # 3) Create a syn tcp packet (flags = "S") with destination port set to destination_port, random source port
-    # 4) Send the TCP / IP packet using send
+    src_port = random_private_port() if src_port is None else src_port
+
+    # Use the scapy library to send a syn packet to the destination socket
+    # All the necessary classes and functions are already imported
+    # Remember that a syn packet is a simple tcp packet with the syn flag enabled
+
+    # 1) Build the IP packet
+
+    # 2) Build the TCP packet with the S flag
+
+    # 3) Send the IP/TCP packet
 
 
 if __name__ == '__main__':
     """Launch this script to test the send_syn function"""
     # 1) SET THE TARGET IP OF YOUR VMs ENVIRONMENT BELOW,
-    # 2) launch the script with "python syn_exercise.py"
+    # 2) launch the script with "python3 syn_exercise.py"
     # 3) Verify the reception and the response with the synack on the target machine using wireshark
     # 4) Try to set spoof_ip to True and repeat the verification, did the source ip changed?
     target_ip = "192.168.31.1"
     target_port = 8080
     spoof_ip = False
 
-
     send_syn(target_ip, target_port, spoof_ip)
-

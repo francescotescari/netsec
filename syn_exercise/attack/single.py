@@ -4,7 +4,7 @@ import sys
 
 
 def _help(argv):
-    print("Usage  : python %s target_ip target_port [spoof_ip:bool]\n"
+    print("Usage  : python %s target_ip target_port [spoof_ip:bool] [src_port:int]\n"
           "Example: python %s 192.168.1.25 8080 true" % (argv[0], argv[0]))
     exit(1)
 
@@ -26,6 +26,7 @@ if __name__ == '__main__':
     target_ip = sys.argv[1]
     target_port = sys.argv[2]
     spoof_ip = False
+    src_port = None
     if len(sys.argv) > 3:
         val = sys.argv[3].lower()
         try:
@@ -36,6 +37,13 @@ if __name__ == '__main__':
             else:
                 print("Invalid spoof_ip value: %s" % val)
                 _help(sys.argv)
+    if len(sys.argv) > 4:
+        val = sys.argv[4].lower()
+        try:
+            src_port = int(val)
+        except:
+            print("Invalid src_port value: %s" % val)
+            _help(sys.argv)
     print("Sending a syn packet to %s:%s" % (target_ip, target_port))
-    send_syn(target_ip, target_port, spoof_ip)
+    send_syn(target_ip, target_port, spoof_ip, src_port)
     print("Done")
