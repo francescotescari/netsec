@@ -35,8 +35,6 @@ def send_syn(destination_ip, destination_port, spoofed_ip=True, src_port=None):
     tcp_packet.sport = src_port
     tcp_packet.dport = int(destination_port)
     tcp_packet.flags = "S"
-    tcp_packet.seq = 0
-    tcp_packet.window = 65535
 
-    # Send the IP/TCP packet
+    # 3) Send the IP/TCP packet
     return send(ip_packet / tcp_packet, verbose=0, loop=0)
