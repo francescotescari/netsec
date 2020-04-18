@@ -15,12 +15,12 @@ def startAttack(victim_ip, ntp_server_ip):
 	print(f"Attacking {victim_ip} whith {ntp_server_ip} as NTP server")
 
     # TODO: forge packet
-    #packet = 
+    #packet =
 
     # send packet
     send(packet, loop=0)
 
-	print(f"Attack finished. Sent {sent_packets} packets.")
+	print(f"Attack finished.")
 
 
 def main():

@@ -20,7 +20,7 @@ def startAttack(victim_ip, ntp_server_ip):
     # send packet
     send(packet, loop=0)
 
-	print(f"Attack finished. Sent {sent_packets} packets.")
+	print(f"Attack finished.")
 
 
 def main():
