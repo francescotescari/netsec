@@ -4,11 +4,8 @@ from scapy.all import send, TCP, IP, RandIP, RandShort
 
 
 def send_syn(destination_ip, destination_port, spoofed_ip=True, source_port=None):
-    """Send a syn packet to destination socket. Optionally spoof the origin ip"""
+    """Send a syn packet to destination socket"""
     source_port = RandShort() if source_port is None else source_port
-
-    # Use the scapy library to send a syn packet to the destination socket
-    # All the necessary classes and functions are already imported
 
     # 1) Build the IP packet
     ip_packet = IP()

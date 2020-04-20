@@ -4,11 +4,8 @@ from syn_solution import _parse_option, _bool_val
 
 
 def send_syn(destination_ip, destination_port, spoofed_ip=True, source_port=None):
-    """Send a syn packet to destination socket. Optionally spoof the origin ip"""
+    """Send a syn packet to destination socket"""
     source_port = RandShort() if source_port is None else source_port
-
-    # Use the scapy library to send a syn packet to the destination socket
-    # All the necessary classes and functions are already imported
 
     # 1) Build the IP packet
     ip_packet = IP()
@@ -16,8 +13,8 @@ def send_syn(destination_ip, destination_port, spoofed_ip=True, source_port=None
     if spoofed_ip:
         ip_packet.src = RandIP()
 
-    # 2) Build the TCP SYN packet
-    # TODO COMPLETE THE TCP HEADER HERE
+    # 2) Build the TCP packet with the S flag
+    # TODO COMPLETE THE TCP HEADER PART HERE WITH THE RIGHT PORTS AND FLAGS
     # tcp_packet =
 
     # 3) Send the IP/TCP packet
