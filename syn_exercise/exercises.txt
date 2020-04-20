@@ -1,26 +1,28 @@
 1) Syn flood attack
-    A) Start the HTTP server on the target machine (run server/start_server.sh)
-    B) Complete the send_syn function in the attack/syn_exercise.py script using scapy
-    C) Open wireshark on the target server (run server/start_wireshark.sh)
-    D) Send a syn packet using your syn_exercise.py script (or attack/single.py if you failed to do that) to the target machine
-    E) Observe the communication and the behaviour of the server on wireshark
-    F) Send a synflood attack using the attack/flood.py script
-    G) Observe the traffic on the server with wireshark and spot some differences with the single packet
-    H) Check if the server is reachable during the syn flood attack
+    A) Start the HTTP server on port 8080 (./start_server.sh) [Server]
+    B) Open wireshark on the target server (sudo ./start_wireshark.sh) [Server]
+    C) Complete the send_syn function in the syn_exercise.py script using scapy [Attacker]
+    D) Send a syn packet to the target machine using sudo python3 syn_exercise.py ip port [spoof_ip] (use syn_solution.py if you failed to complete the part C) [Attacker]
+    E) Send another one but with spoofed ip [Attacker]
+    F) Observe the communications on wireshark [Server]
+    G) Send a synflood attack using the sudo python3 flood.py [ip] [port] script [Attacker]
+    H) Observe the traffic on the server with wireshark and spot the differences [Server]
+    I) Is the HTTP server reachable during the syn flood attack? [Attacker/Host]
 2) Backlog analysis
-    A) Start the backlog watch script on the server (run server/watch_backlog.sh)
-    B) Send a synflood attack to the target machine
-    C) Observer the backlog queue with the watch script, what is the size of the backlog?
-    D) Try to double the size of the backlog by restarting the HTTP server with the backlog argument (run server/start_server.sh BACKLOG_VALUE)
-    E) Send a synflood with the number of packets equals to the size of the backlog
-    F) Observe the timeouts in the backlog queue. How many connection got the full one minute timeout? How many got the two seconds timeout?
+    A) Start the backlog watch script on the server (./watch_backlog.sh) [Server]
+    B) Send a synflood attack to the target machine (sudo python3 flood.py [ip] [port]) [Attacker]
+    C) Observe the backlog queue with the watch script. What is the size of the backlog? [Server]
+    D) Try to double the size of the backlog by restarting the HTTP server with the backlog argument (./start_server.sh [BACKLOG_SIZE]) [Server]
+    E) Send a synflood attack with the number of packets equals to the size of the backlog (sudo python3 flood.py [ip] [port] [number_of_packets]) [Attacker]
+    F) Observe the timeouts in the backlog queue. How many connections get 5 timeouts? How many get 2 timeouts? [Server]
     G) Repeat steps D, E, F one more time
-    H) Can you spot the rule behind the timeouts? Can you calculate the minimum number of request per minute required to keep the backlog queue full, as function of the backlog size?
-    I) What if I set the backlog size to one milion. How many syn packets should an attacker send per minute in order to keep the backlog queue full?
+    H) Can you spot the rule behind the timeouts? Can you calculate the minimum number of syn packets per minute required to keep the backlog queue full, with a backlog size of 100? (*)
 3) Syncookies
-    A) Enable the syncookies coption using "sudo sysctl -w net.ipv4.tcp_syncookies=1"
-    B) Restart the HTTP server with the default backlog value
-    C) Send a synflood attack to the target machine
-    D) Observe the behaviour on wireshark on the target machine
-    G) Observe the traffic on the server with wireshark and spot some differences with the attack with syncookies disabled
-    H) Check if the server is reachable during the syn flood attack
+    A) Enable the syncookies option using sudo sysctl -w net.ipv4.tcp_syncookies=1 [Server]
+    B) Restart the HTTP server with the default backlog value (./start_server.sh) [Server]
+    C) Send a synflood attack to the target machine (sudo python3 flood.py [ip] [port]) [Attacker]
+    D) Observe the traffic on the server with wireshark and spot some differences with the attack with syncookies disabled [Server]
+    E) Is the HTTP server reachable during the syn flood attack? [Attacker/Host]
+    F) While attacking the server, send two syn packets with no ip spoofing and static source port (use the sudo python3 flood.py [ip] [port] 2 false 12345) [Attacker]
+    G) Use wireshark and identify the two synack responses to those packets (add the and ip.dst == [attacker ip] filter on wireshark) [Server]
+    H) Are the sequence numbers equal? Did you expect it? [Server]
