@@ -1,1 +1,1 @@
-watch -n 0.1 "ss -o state syn-recv sport = :8080"
+watch -n 0.1 "ss -on state syn-recv sport = :8080"

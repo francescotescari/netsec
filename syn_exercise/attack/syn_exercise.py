@@ -1,44 +1,38 @@
-from random import randint
-
-from scapy.all import send, TCP, IP
-
-
-def random_ip():
-    """Return a random ip address."""
-    return ".".join(map(str, (randint(1, 255) for _ in range(4))))
+import sys
+from scapy.all import send, TCP, IP, RandIP, RandShort
+from syn_solution import _parse_option, _bool_val
 
 
-def random_private_port():
-    """Return a random port number among the private ports."""
-    return randint(49152, 65535)
-
-
-private_static_port = 12345
-
-
-def send_syn(destination_ip, destination_port, spoofed_ip=True, src_port=None):
+def send_syn(destination_ip, destination_port, spoofed_ip=True, source_port=None):
     """Send a syn packet to destination socket. Optionally spoof the origin ip"""
-    src_port = random_private_port() if src_port is None else src_port
+    source_port = RandShort() if source_port is None else source_port
 
     # Use the scapy library to send a syn packet to the destination socket
     # All the necessary classes and functions are already imported
-    # Remember that a syn packet is a simple tcp packet with the syn flag enabled
 
     # 1) Build the IP packet
+    ip_packet = IP()
+    ip_packet.dst = destination_ip
+    if spoofed_ip:
+        ip_packet.src = RandIP()
 
-    # 2) Build the TCP packet with the S flag
+    # 2) Build the TCP SYN packet
+    # TODO COMPLETE THE TCP HEADER HERE
+    # tcp_packet =
 
     # 3) Send the IP/TCP packet
+    return send(ip_packet / tcp_packet, verbose=0, loop=0)
+
+
+def _help(argv):
+    print("Usage  : sudo python3 %s target_ip target_port [spoof_ip:bool] [src_port:int]\n"
+          "Example: sudo python3 %s 192.168.1.25 8080 true" % (argv[0], argv[0]))
 
 
 if __name__ == '__main__':
-    """Launch this script to test the send_syn function"""
-    # 1) SET THE TARGET IP OF YOUR VMs ENVIRONMENT BELOW,
-    # 2) launch the script with "python3 syn_exercise.py"
-    # 3) Verify the reception and the response with the synack on the target machine using wireshark
-    # 4) Try to set spoof_ip to True and repeat the verification, did the source ip changed?
-    target_ip = "192.168.31.1"
-    target_port = 8080
-    spoof_ip = False
-
-    send_syn(target_ip, target_port, spoof_ip)
+    """Launch the script with "sudo python3 syn_exercise.py target_ip target_port [spoof_ip:bool] [src_port:int]" """
+    target_ip = _parse_option(sys.argv, 1, None, None, help_function=_help, required=True, name="target_ip")
+    target_port = _parse_option(sys.argv, 2, int, None, help_function=_help, required=True, name="target_port")
+    spoof_ip = _parse_option(sys.argv, 3, _bool_val, False, help_function=_help, name="spoof_ip")
+    src_port = _parse_option(sys.argv, 4, int, None, help_function=_help, name="src_port")
+    send_syn(target_ip, target_port, spoofed_ip=spoof_ip, source_port=src_port)
